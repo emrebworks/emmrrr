@@ -35,7 +35,7 @@ function applyTheme(hex) {
   document.documentElement.style.setProperty('--accent', hex);
   document.documentElement.style.setProperty('--accent-ink', idealTextColor(hex));
   document.documentElement.style.setProperty('--accent-soft', lightenHex(hex, 0.85));
-  document.documentElement.style.setProperty('--accent-bg-top', lightenHex(hex, 0.82));
+  document.documentElement.style.setProperty('--accent-bg-top', lightenHex(hex, 0.68));
 }
 function idealTextColor(hex) {
   const { r, g, b } = hexToRgb(hex);
@@ -120,8 +120,8 @@ function subscribeToRealtimeUpdates(cafeId) {
 async function refreshData(options = {}) {
   const cafeId = state.cafe.id;
   const [{ data: categories }, { data: products }] = await Promise.all([
-    db.from('categories').select('*').eq('cafe_id', cafeId).order('sort_order'),
-    db.from('products').select('*').eq('cafe_id', cafeId).order('sort_order'),
+    db.from('categories').select('*').eq('cafe_id', cafeId).order('sort_order').order('name'),
+    db.from('products').select('*').eq('cafe_id', cafeId).order('sort_order').order('name'),
   ]);
   state.categories = categories || [];
   state.products = products || [];
@@ -201,6 +201,7 @@ function renderTopbar() {
 
 function renderHomeBanners() {
   return `
+    ${renderWifiInfo()}
     <div class="banner-list">
       ${state.categories.map((c) => {
         const count = state.products.filter((p) => p.category_id === c.id).length;
@@ -219,17 +220,26 @@ function renderHomeBanners() {
   `;
 }
 
+// Wifi şifresi, ilk kategori afişinin hemen üstünde gösterilir —
+// müşterinin menüyü açar açmaz görebileceği bir yerde.
+function renderWifiInfo() {
+  if (!state.cafe.wifi_password) return '';
+  return `
+    <div class="wifi-chip">
+      <span class="wifi-chip-icon">📶</span>
+      <span class="wifi-chip-text">Wifi <strong>${escapeHtml(state.cafe.wifi_password)}</strong></span>
+    </div>
+  `;
+}
+
 function renderFooterInfo() {
-  const wifi = state.cafe.wifi_password
-    ? `<div class="footer-info-item">📶 Wifi şifresi: <strong>${escapeHtml(state.cafe.wifi_password)}</strong></div>`
-    : '';
   // Basit ve şeffaf bir tahmin: her menü görüntülenmesi, basılı bir menü
   // sayfasının yerine geçtiği varsayılıyor.
   const eco = state.totalViews > 0
     ? `<div class="footer-info-item eco-note">🌱 Bu menü şimdiye kadar <strong>${state.totalViews}</strong> kez görüntülendi — tahmini o kadar kağıt sayfası tasarrufu sağladık</div>`
     : '';
-  if (!wifi && !eco) return '';
-  return `<div class="footer-info">${wifi}${eco}</div>`;
+  if (!eco) return '';
+  return `<div class="footer-info">${eco}</div>`;
 }
 
 function renderBrowseView() {
