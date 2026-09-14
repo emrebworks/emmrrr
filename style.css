@@ -18,7 +18,7 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: linear-gradient(180deg, var(--accent-bg-top) 0px, var(--bg) 260px, var(--bg) 100%);
+  background: linear-gradient(180deg, var(--accent-bg-top) 0px, var(--bg) 480px, var(--bg) 100%);
   color: var(--ink);
   font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
@@ -116,6 +116,36 @@ html, body {
 }
 .footer-info-item.eco-note {
   color: var(--ink);
+}
+.wifi-chip {
+  margin: 6px 16px 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 7px 14px 7px 10px;
+  box-shadow: 0 1px 3px rgba(20,24,16,0.06);
+}
+.wifi-chip-icon {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+.wifi-chip-text {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.wifi-chip-text strong {
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 .back-btn {
   width: 36px; height: 36px;
